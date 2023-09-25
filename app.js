@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const messageRouter = require("./routes/messageRoutes");
 const purchaseRouter = require("./routes/purchaseRoutes");
+const organisationRouter = require("./routes/organisationRoutes");
 
 require("dotenv").config();
 
@@ -38,3 +39,4 @@ app.get("/public-key", (req, res) => {
 
 app.use("/messages", messageRouter);
 app.use("/purchase", purchaseRouter);
+app.use("/organisations", organisationRouter);
