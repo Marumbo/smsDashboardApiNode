@@ -23,6 +23,17 @@ const getAllOrganisations = (req, res) => {
 
 const createOrganisation = (req, res) => {
   const { email, name, sender_id } = req.body;
+  //add check for values not being empty
+  const organisationCheck = Organisation.find({
+    email: email,
+  });
+
+  if (organisationCheck) {
+    res.json({
+      status: "fail",
+      message: "Organisation with email already exists",
+    });
+  }
 
   const organisationEntry = new Organisation({
     email: email,
@@ -62,18 +73,17 @@ async function getOrganisaion(req, res) {
       res.json({
         status: "fail",
         message: "organisation not found",
-        result: organisation,
       });
     }
     res.json({
       status: "success",
-      message: "organisation ound",
+      message: "Organisation found",
       result: organisation,
     });
   } catch (error) {
     res.json({
       status: "fail",
-      message: "organisation find failure",
+      message: "Organisation find failure",
       error: error.message,
     });
   }
@@ -87,7 +97,7 @@ async function updateOrganisation(req, res) {
   if (!organisation) {
     res.json({
       status: "fail",
-      message: "organisation does not exist",
+      message: "Organisation does not exist",
     });
   }
   try {
@@ -99,13 +109,13 @@ async function updateOrganisation(req, res) {
 
     res.json({
       status: "success",
-      message: "organisation updated",
+      message: "Organisation updated",
       result: updatedOrganisation,
     });
   } catch (error) {
     res.json({
       status: "fail",
-      message: "organisation udpdate failure",
+      message: "Organisation update failure",
       error: error.message,
     });
   }
@@ -118,7 +128,7 @@ async function deleteOrganisation(req, res) {
   if (!organisation) {
     res.json({
       status: "fail",
-      message: "organisation does not exist",
+      message: "Organisation does not exist",
     });
   }
   try {
@@ -126,13 +136,13 @@ async function deleteOrganisation(req, res) {
 
     res.json({
       status: "success",
-      message: "organisation deleted",
+      message: "Organisation deleted",
       result: deletedOrganisation,
     });
   } catch (error) {
     res.json({
       status: "fail",
-      message: "organisation delete failure",
+      message: "Organisation delete failure",
       error: error.message,
     });
   }
