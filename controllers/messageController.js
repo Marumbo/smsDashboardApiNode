@@ -53,7 +53,7 @@ const send_sms = async (req, res) => {
         console.log("saving sms");
         console.log(result);
 
-        res.json({
+        return res.json({
           status: "success",
           message: "message saved",
           result: result,
@@ -82,7 +82,7 @@ const message_index = (req, res) => {
     .then((result) => {
       console.log("Returning all messages");
 
-      res.json({
+      return res.json({
         status: "success",
         message: "message list",
         result: result,
@@ -90,7 +90,7 @@ const message_index = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json({
+      return res.json({
         status: "fail",
         message: " message list failure",
         error: err.message,

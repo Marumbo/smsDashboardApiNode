@@ -4,7 +4,7 @@ const getAllCountryCodes = (req, res) => {
   CountryCode.find()
     .then((result) => {
       console.log("Returning all acceptable country codes");
-      res.json({
+      return res.json({
         status: "success",
         message: "Acceptable country codes list",
         result: result,
@@ -12,7 +12,7 @@ const getAllCountryCodes = (req, res) => {
     })
     .catch((error) => {
       console.log(err);
-      res.json({
+      return res.json({
         status: "fail",
         message: "Country code list failure",
         error: error.message,
@@ -29,18 +29,12 @@ async function createCountryCode(req, res) {
     country_code: countryCodeData.country_code,
   });
 
-  console.log(countyCodeCheck);
-
   if (countyCodeCheck) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "country code already exists",
     });
   }
-  res.json({
-    status: "success",
-    message: "country code doesnt exists",
-  });
 
   const countryCodeEntry = new CountryCode({
     ...countryCodeData,
@@ -52,7 +46,7 @@ async function createCountryCode(req, res) {
       console.log("saving country code");
       console.log(result);
 
-      res.json({
+      return res.json({
         status: "success",
         message: "country code saved",
         result: result,
@@ -61,7 +55,7 @@ async function createCountryCode(req, res) {
     .catch((error) => {
       console.log("error saving country code");
       console.log(error);
-      res.json({
+      return res.json({
         status: "fail",
         message: "country code save failure",
         error: error.message,
@@ -75,18 +69,18 @@ async function getCountryCode(req, res) {
   try {
     const countryCode = await CountryCode.findById(id);
     if (!countryCode) {
-      res.json({
+      return res.json({
         status: "fail",
         message: "country code not found",
       });
     }
-    res.json({
+    return res.json({
       status: "success",
       message: "country code found",
       result: countryCode,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "country code find failure",
       error: error.message,
@@ -100,7 +94,7 @@ async function updateCountryCode(req, res) {
 
   const countryCodeFind = await CountryCode.findById(id);
   if (!countryCodeFind) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "Country Code does not exist.",
     });
@@ -115,13 +109,13 @@ async function updateCountryCode(req, res) {
       }
     );
 
-    res.json({
+    return res.json({
       status: "success",
       message: "CountryCode updated",
       result: updatedCountryCode,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "CountryCode update failure",
       error: error.message,
@@ -135,7 +129,7 @@ async function deleteCountryCode(req, res) {
   const countryCode = await CountryCode.findById(id);
 
   if (!countryCode) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "CountryCode does not exist",
     });
@@ -143,13 +137,13 @@ async function deleteCountryCode(req, res) {
   try {
     const deletedCountryCode = await CountryCode.deleteOne({ _id: id });
 
-    res.json({
+    return res.json({
       status: "success",
       message: "CountryCode deleted",
       result: deletedCountryCode,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "CountryCode delete failure",
       error: error.message,
