@@ -77,7 +77,7 @@ async function getContact(req, res) {
     return res.json({
       status: "success",
       message: "contact found",
-      result: countryCode,
+      result: contact,
     });
   } catch (error) {
     return res.json({

@@ -8,6 +8,7 @@ const userRouter = require("./routes/userRoutes");
 const countryCodeRouter = require("./routes/countryCodeRoutes");
 const smsPriceSettingsRouter = require("./routes/smsPriceSettingsRoutes");
 const contactRouter = require("./routes/contactRoutes");
+const groupRouter = require("./routes/groupRoutes");
 
 require("dotenv").config();
 
@@ -45,6 +46,7 @@ app.use("/messages", messageRouter);
 app.use("/purchase", purchaseRouter);
 app.use("/organisations", organisationRouter);
 app.use("/users", userRouter);
-app.use("/countryCode", countryCodeRouter);
+app.use("/countryCodes", countryCodeRouter);
 app.use("/smsPriceSettings", smsPriceSettingsRouter);
 app.use("/contacts", contactRouter);
+app.use("/groups", groupRouter);
