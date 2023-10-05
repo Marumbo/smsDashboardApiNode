@@ -1,6 +1,6 @@
 const Organisation = require("../models/organisation");
 
-const getAllOrganisations = (req, res) => {
+async function getAllOrganisations(req, res) {
   Organisation.find()
     .then((result) => {
       console.log("Returning all organisation");
@@ -19,12 +19,12 @@ const getAllOrganisations = (req, res) => {
         error: err.message,
       });
     });
-};
+}
 
-const createOrganisation = (req, res) => {
+async function createOrganisation(req, res) {
   const { email, name, sender_id } = req.body;
   //add check for values not being empty
-  const organisationCheck = Organisation.find({
+  const organisationCheck = await Organisation.find({
     email: email,
   });
 
@@ -62,7 +62,7 @@ const createOrganisation = (req, res) => {
         error: err.message,
       });
     });
-};
+}
 
 async function getOrganisaion(req, res) {
   const id = req.params.id;

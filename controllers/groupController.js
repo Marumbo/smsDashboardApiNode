@@ -1,7 +1,7 @@
 const Group = require("../models/group");
 
-const getAllGroups = (req, res) => {
-  Group.find()
+const getAllGroups = async (req, res) => {
+  await Group.find()
     .then((result) => {
       console.log("Returning all group");
       return res.json({
@@ -25,8 +25,8 @@ async function createGroup(req, res) {
   console.log("group data ", groupData);
   //check if data is not empty
 
-  const groupCheck = Group.find({
-    name: name,
+  const groupCheck = await Group.find({
+    name: groupData.name,
   });
 
   if (groupCheck) {
@@ -40,7 +40,7 @@ async function createGroup(req, res) {
     ...groupData,
   });
 
-  groupEntry
+  await groupEntry
     .save()
     .then((result) => {
       console.log("saving group");
@@ -135,7 +135,7 @@ async function deleteGroup(req, res) {
 
     return res.json({
       status: "success",
-      message: "Country deleted",
+      message: "Group deleted",
       result: deletedGroup,
     });
   } catch (error) {

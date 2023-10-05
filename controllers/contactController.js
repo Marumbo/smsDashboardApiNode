@@ -1,7 +1,7 @@
 const Contact = require("../models/contact");
 
-const getAllContacts = (req, res) => {
-  Contact.find()
+async function getAllContacts(req, res) {
+  await Contact.find()
     .then((result) => {
       console.log("Returning all contact");
       return res.json({
@@ -18,18 +18,20 @@ const getAllContacts = (req, res) => {
         error: error.message,
       });
     });
-};
+}
 
 async function createContact(req, res) {
   const contactData = req.body;
   console.log("Contact data ", contactData);
   //check if data is not empty
 
-  const contactCheck = Contact.find({
+  const contactCheck = await Contact.find({
     phone_number: contactData.phone_number,
   });
 
-  if (contactCheck) {
+  console.log("Contact check", contactCheck);
+
+  if (contactCheck.length) {
     return res.json({
       status: "fail",
       message: "contact already exists",
@@ -68,7 +70,7 @@ async function getContact(req, res) {
 
   try {
     const contact = await Contact.findById(id);
-    if (!contact) {
+    if (contact.length) {
       return res.json({
         status: "fail",
         message: "contact not found",
@@ -93,6 +95,7 @@ async function updateContact(req, res) {
   const contactData = req.body;
 
   const contactFind = await Contact.findById(id);
+  console.log("contact", contactFind);
   if (!contactFind) {
     return res.json({
       status: "fail",
@@ -123,7 +126,7 @@ async function deleteContact(req, res) {
   //TODO: a check for id check if less than desired number or string?
   const id = req.params.id;
   const contact = await Contact.findById(id);
-
+  console.log("contact", contact);
   if (!contact) {
     return res.json({
       status: "fail",
@@ -135,13 +138,13 @@ async function deleteContact(req, res) {
 
     return res.json({
       status: "success",
-      message: "Country deleted",
+      message: "Contact deleted",
       result: deletedContact,
     });
   } catch (error) {
     return res.json({
       status: "fail",
-      message: "Contact failure",
+      message: "Contact delete failure",
       error: error.message,
     });
   }

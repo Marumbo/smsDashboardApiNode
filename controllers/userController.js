@@ -3,8 +3,8 @@ const Organisation = require("../models/organisation");
 var mongoose = require("mongoose");
 var ObjectId = mongoose.Types.ObjectId;
 
-const getAllUsers = (req, res) => {
-  User.find()
+async function getAllUsers(req, res) {
+  await User.find()
     .then((result) => {
       console.log("Returning all users");
       res.json({
@@ -21,7 +21,7 @@ const getAllUsers = (req, res) => {
         error: error.message,
       });
     });
-};
+}
 
 async function createUser(req, res) {
   //TODO: hash password

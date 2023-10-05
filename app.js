@@ -9,6 +9,7 @@ const countryCodeRouter = require("./routes/countryCodeRoutes");
 const smsPriceSettingsRouter = require("./routes/smsPriceSettingsRoutes");
 const contactRouter = require("./routes/contactRoutes");
 const groupRouter = require("./routes/groupRoutes");
+const groupContactsRouter = require("./routes/groupContactRoutes");
 
 require("dotenv").config();
 
@@ -50,3 +51,4 @@ app.use("/countryCodes", countryCodeRouter);
 app.use("/smsPriceSettings", smsPriceSettingsRouter);
 app.use("/contacts", contactRouter);
 app.use("/groups", groupRouter);
+app.use("/groupContacts", groupContactsRouter);

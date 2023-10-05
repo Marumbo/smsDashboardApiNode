@@ -2,8 +2,8 @@ const SmsPriceSettings = require("../models/smsPriceSettings");
 const CountryCode = require("../models/countryCode");
 const Organisation = require("../models/organisation");
 
-const getAllSmsPriceSettings = (req, res) => {
-  SmsPriceSettings.find()
+async function getAllSmsPriceSettings(req, res) {
+  await SmsPriceSettings.find()
     .then((result) => {
       // console.log("Returning all Sms Price Settings");
       res.json({
@@ -20,7 +20,7 @@ const getAllSmsPriceSettings = (req, res) => {
         error: error.message,
       });
     });
-};
+}
 
 async function createSmsPriceSettings(req, res) {
   const smsPriceSettingsData = req.body;

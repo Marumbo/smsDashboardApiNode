@@ -78,8 +78,8 @@ const send_sms = async (req, res) => {
   }
 };
 
-const message_index = (req, res) => {
-  Message.find()
+async function message_index(req, res) {
+  await Message.find()
     .then((result) => {
       console.log("Returning all messages");
 
@@ -97,9 +97,9 @@ const message_index = (req, res) => {
         error: err.message,
       });
     });
-};
+}
 
-const message_create_post = (req, res) => {
+const message_create_post = async (req, res) => {
   console.log(req.body);
   const { name, email, messageBody, target } = req.body;
 
@@ -110,7 +110,7 @@ const message_create_post = (req, res) => {
     target: target,
   });
 
-  messageEntry
+  await messageEntry
     .save()
     .then((result) => {
       console.log("saving message");
