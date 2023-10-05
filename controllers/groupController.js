@@ -26,7 +26,7 @@ async function createGroup(req, res) {
   //check if data is not empty
 
   const groupCheck = Group.find({
-    phone_number: groupData.phone_number,
+    name: name,
   });
 
   if (groupCheck) {
