@@ -34,7 +34,7 @@ async function sendMessage(numbers, message, from) {
 const send_sms = async (req, res) => {
   //console.log("request body", req.body);
 
-  const { numbers, message, from } = req.body;
+  const { numbers, message, from, isGroup } = req.body;
 
   const result = await sendMessage(numbers, message, from);
 
@@ -45,6 +45,7 @@ const send_sms = async (req, res) => {
       number: numbers,
       price: "15",
       countryCode: "+250",
+      isGroup: isGroup,
     });
 
     smsEntry

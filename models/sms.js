@@ -28,6 +28,10 @@ const smsSchema = new Schema(
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );
