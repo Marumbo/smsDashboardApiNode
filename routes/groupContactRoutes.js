@@ -16,8 +16,8 @@ const router = express.Router();
 router.get("/all", getAllGroupContacts);
 router.get("/:id", getGroupContact);
 router.post("/create", createGroupContacts);
-router.put("/:id", addContactToGroup);
-router.put("/:id", removeContactFromGroup);
+router.put("/add/:id", addContactToGroup);
+router.put("/remove/:id", removeContactFromGroup);
 router.delete("/:id", deleteGroupContact);
 
 module.exports = router;

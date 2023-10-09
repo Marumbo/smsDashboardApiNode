@@ -92,15 +92,15 @@ async function updateCountryCode(req, res) {
   const id = req.params.id;
   const countryCodeData = req.body;
 
-  const countryCodeFind = await CountryCode.findById(id);
-  if (!countryCodeFind) {
-    return res.json({
-      status: "fail",
-      message: "Country Code does not exist.",
-    });
-  }
-
   try {
+    const countryCodeFind = await CountryCode.findById(id);
+    if (!countryCodeFind) {
+      return res.json({
+        status: "fail",
+        message: "Country Code does not exist.",
+      });
+    }
+
     const updatedCountryCode = await CountryCode.findByIdAndUpdate(
       id,
       countryCodeData,
@@ -126,15 +126,16 @@ async function updateCountryCode(req, res) {
 async function deleteCountryCode(req, res) {
   //TODO: a check for id check if less than desired number or string?
   const id = req.params.id;
-  const countryCode = await CountryCode.findById(id);
-
-  if (!countryCode) {
-    return res.json({
-      status: "fail",
-      message: "CountryCode does not exist",
-    });
-  }
   try {
+    const countryCode = await CountryCode.findById(id);
+
+    if (!countryCode) {
+      return res.json({
+        status: "fail",
+        message: "CountryCode does not exist",
+      });
+    }
+
     const deletedCountryCode = await CountryCode.deleteOne({ _id: id });
 
     return res.json({

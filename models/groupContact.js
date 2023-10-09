@@ -8,8 +8,8 @@ const GroupContactsSchema = new Schema(
       type: String,
       required: true,
     },
-    contacts: {
-      type: Array,
+    contact_ids: {
+      type: [String],
       required: true,
     },
   },

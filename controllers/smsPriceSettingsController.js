@@ -26,61 +26,59 @@ async function createSmsPriceSettings(req, res) {
   const smsPriceSettingsData = req.body;
   console.log("Sms Price Settings ", smsPriceSettingsData);
   //check if data is not empty
+  try {
+    const organisationCheck = await Organisation.findById(
+      smsPriceSettingsData.organisation_id
+    );
+    console.log(organisationCheck);
+    if (!organisationCheck) {
+      return res.json({
+        status: "fail",
+        message: "Organisation does not exists check id",
+      });
+    }
 
-  const organisationCheck = await Organisation.findById(
-    smsPriceSettingsData.organisation_id
-  );
-  console.log(organisationCheck);
-  if (!organisationCheck) {
-    return res.json({
-      status: "fail",
-      message: "Organisation does not exists check id",
+    const countyCodeCheck = await CountryCode.find({
+      country_code: smsPriceSettingsData.country_code,
     });
-  }
 
-  const countyCodeCheck = await CountryCode.find({
-    country_code: smsPriceSettingsData.country_code,
-  });
+    if (!countyCodeCheck) {
+      return res.json({
+        status: "fail",
+        message: "country code  doest not exist",
+      });
+    }
 
-  if (!countyCodeCheck) {
-    return res.json({
-      status: "fail",
-      message: "country code  doest not exist",
+    const smsPriceSettingsCheck = SmsPriceSettings.findOne({
+      organisation_id: smsPriceSettingsData.organisation_id,
+      country_code: smsPriceSettingsData.country_code,
     });
-  }
 
-  const smsPriceSettingsCheck = SmsPriceSettings.findOne({
-    organisation_id: smsPriceSettingsData.organisation_id,
-    country_code: smsPriceSettingsData.country_code,
-  });
+    if (smsPriceSettingsCheck) {
+      return res.json({
+        status: "fail",
+        message: "Price for the country code and organisation already exists",
+      });
+    }
 
-  if (smsPriceSettingsCheck) {
-    return res.json({
-      status: "fail",
-      message: "Price for the country code and organisation already exists",
+    const smsPriceSettingsEntry = new SmsPriceSettings({
+      ...smsPriceSettingsData,
     });
-  }
 
-  const smsPriceSettingsEntry = new SmsPriceSettings({
-    ...smsPriceSettingsData,
-  });
-
-  smsPriceSettingsEntry
-    .save()
-    .then((result) => {
+    smsPriceSettingsEntry.save().then((result) => {
       return res.json({
         status: "success",
         message: "Sms Price Settings saved",
         result: result,
       });
-    })
-    .catch((error) => {
-      return res.json({
-        status: "fail",
-        message: "Sms Price Settings save failure",
-        error: error.message,
-      });
     });
+  } catch (error) {
+    return res.json({
+      status: "fail",
+      message: "Sms Price Settings save failure",
+      error: error.message,
+    });
+  }
 }
 
 async function getSmsPriceSettings(req, res) {
@@ -112,15 +110,15 @@ async function updateSmsPriceSettings(req, res) {
   const id = req.params.id;
   const smsPriceSettingsData = req.body;
 
-  const smsPriceSettingsFind = await SmsPriceSettings.findById(id);
-  if (!smsPriceSettingsFind) {
-    return res.json({
-      status: "fail",
-      message: "Sms Price Settings does not exist.",
-    });
-  }
-
   try {
+    const smsPriceSettingsFind = await SmsPriceSettings.findById(id);
+    if (!smsPriceSettingsFind) {
+      return res.json({
+        status: "fail",
+        message: "Sms Price Settings does not exist.",
+      });
+    }
+
     const updatedSmsPriceSettingsData =
       await SmsPriceSettings.findByIdAndUpdate(id, smsPriceSettingsData, {
         new: true,
@@ -143,15 +141,17 @@ async function updateSmsPriceSettings(req, res) {
 async function deleteSmsPriceSettings(req, res) {
   //TODO: a check for id check if less than desired number or string?
   const id = req.params.id;
-  const smsPriceSettings = await SmsPriceSettings.findById(id);
 
-  if (!smsPriceSettings) {
-    return res.json({
-      status: "fail",
-      message: "Sms Price Settings does not exist",
-    });
-  }
   try {
+    const smsPriceSettings = await SmsPriceSettings.findById(id);
+
+    if (!smsPriceSettings) {
+      return res.json({
+        status: "fail",
+        message: "Sms Price Settings does not exist",
+      });
+    }
+
     const deletedSmsPriceSettings = await SmsPriceSettings.deleteOne({
       _id: id,
     });

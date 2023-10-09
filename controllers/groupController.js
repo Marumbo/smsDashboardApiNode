@@ -1,3 +1,4 @@
+const { isEmpty } = require("lodash");
 const Group = require("../models/group");
 
 const getAllGroups = async (req, res) => {
@@ -24,43 +25,40 @@ async function createGroup(req, res) {
   const groupData = req.body;
   console.log("group data ", groupData);
   //check if data is not empty
-
-  const groupCheck = await Group.find({
-    name: groupData.name,
-  });
-
-  if (groupCheck) {
-    return res.json({
-      status: "fail",
-      message: "group already exists",
+  try {
+    const groupCheck = await Group.find({
+      name: groupData.name,
     });
-  }
 
-  const groupEntry = new Group({
-    ...groupData,
-  });
+    if (groupCheck.length) {
+      return res.json({
+        status: "fail",
+        message: "group already exists",
+      });
+    }
 
-  await groupEntry
-    .save()
-    .then((result) => {
+    const groupEntry = new Group({
+      ...groupData,
+    });
+
+    await groupEntry.save().then((result) => {
       console.log("saving group");
       console.log(result);
-
       return res.json({
         status: "success",
         message: "group saved",
         result: result,
       });
-    })
-    .catch((error) => {
-      console.log("error saving group");
-      console.log(error);
-      return res.json({
-        status: "fail",
-        message: "group save failure",
-        error: error.message,
-      });
     });
+  } catch (error) {
+    console.log("error saving group");
+    console.log(error);
+    return res.json({
+      status: "fail",
+      message: "group save failure",
+      error: error.message,
+    });
+  }
 }
 
 async function getGroup(req, res) {
@@ -68,7 +66,8 @@ async function getGroup(req, res) {
 
   try {
     const group = await Group.findById(id);
-    if (!group) {
+    console.log("group", group);
+    if (group.length) {
       return res.json({
         status: "fail",
         message: "group not found",
@@ -92,15 +91,15 @@ async function updateGroup(req, res) {
   const id = req.params.id;
   const groupData = req.body;
 
-  const groupFind = await Group.findById(id);
-  if (!groupFind) {
-    return res.json({
-      status: "fail",
-      message: "group does not exist.",
-    });
-  }
-
   try {
+    const groupFind = await Group.findById(id);
+    if (!groupFind) {
+      return res.json({
+        status: "fail",
+        message: "group does not exist.",
+      });
+    }
+
     const updatedGroup = await Group.findByIdAndUpdate(id, groupData, {
       new: true,
     });
@@ -122,15 +121,16 @@ async function updateGroup(req, res) {
 async function deleteGroup(req, res) {
   //TODO: a check for id check if less than desired number or string?
   const id = req.params.id;
-  const group = await Group.findById(id);
-
-  if (!group) {
-    return res.json({
-      status: "fail",
-      message: "group does not exist",
-    });
-  }
   try {
+    const group = await Group.findById(id);
+
+    if (!group) {
+      return res.json({
+        status: "fail",
+        message: "group does not exist",
+      });
+    }
+
     const deletedGroup = await Group.deleteOne({ _id: id });
 
     return res.json({
