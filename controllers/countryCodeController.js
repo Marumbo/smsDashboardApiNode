@@ -25,11 +25,11 @@ async function createCountryCode(req, res) {
   console.log("Country code data ", countryCodeData);
   //check if data is not empty
 
-  const countyCodeCheck = CountryCode.find({
+  const countyCodeCheck = await CountryCode.find({
     country_code: countryCodeData.country_code,
   });
 
-  if (countyCodeCheck) {
+  if (countyCodeCheck.length) {
     return res.json({
       status: "fail",
       message: "country code already exists",
@@ -39,10 +39,8 @@ async function createCountryCode(req, res) {
   const countryCodeEntry = new CountryCode({
     ...countryCodeData,
   });
-
-  countryCodeEntry
-    .save()
-    .then((result) => {
+  try {
+    await countryCodeEntry.save().then((result) => {
       console.log("saving country code");
       console.log(result);
 
@@ -51,16 +49,16 @@ async function createCountryCode(req, res) {
         message: "country code saved",
         result: result,
       });
-    })
-    .catch((error) => {
-      console.log("error saving country code");
-      console.log(error);
-      return res.json({
-        status: "fail",
-        message: "country code save failure",
-        error: error.message,
-      });
     });
+  } catch (error) {
+    console.log("error saving country code");
+    console.log(error);
+    return res.json({
+      status: "fail",
+      message: "country code save failure",
+      error: error.message,
+    });
+  }
 }
 
 async function getCountryCode(req, res) {

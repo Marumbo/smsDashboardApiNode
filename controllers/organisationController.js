@@ -28,8 +28,8 @@ async function createOrganisation(req, res) {
     email: email,
   });
 
-  if (organisationCheck) {
-    res.json({
+  if (organisationCheck.length) {
+    return res.json({
       status: "fail",
       message: "Organisation with email already exists",
     });
@@ -40,10 +40,8 @@ async function createOrganisation(req, res) {
     sender_id: sender_id,
     name: name,
   });
-
-  organisationEntry
-    .save()
-    .then((result) => {
+  try {
+    await organisationEntry.save().then((result) => {
       console.log("saving organisation");
       console.log(result);
 
@@ -52,16 +50,16 @@ async function createOrganisation(req, res) {
         message: "organisation saved",
         result: result,
       });
-    })
-    .catch((err) => {
-      console.log("error saving organisation");
-      console.log(err);
-      res.json({
-        status: "fail",
-        message: "organisation save failure",
-        error: err.message,
-      });
     });
+  } catch (err) {
+    console.log("error saving organisation");
+    console.log(err);
+    res.json({
+      status: "fail",
+      message: "organisation save failure",
+      error: err.message,
+    });
+  }
 }
 
 async function getOrganisaion(req, res) {
