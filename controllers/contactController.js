@@ -70,7 +70,8 @@ async function getContact(req, res) {
 
   try {
     const contact = await Contact.findById(id);
-    if (contact.length) {
+    console.log("Get contact, contact", contact);
+    if (!contact) {
       return res.json({
         status: "fail",
         message: "contact not found",

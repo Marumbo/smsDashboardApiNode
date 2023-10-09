@@ -5,7 +5,7 @@ async function getAllOrganisations(req, res) {
     .then((result) => {
       console.log("Returning all organisation");
 
-      res.json({
+      return res.json({
         status: "success",
         message: "Organisation list",
         result: result,
@@ -13,7 +13,7 @@ async function getAllOrganisations(req, res) {
     })
     .catch((err) => {
       console.log(err);
-      res.json({
+      return res.json({
         status: "fail",
         message: "Organisation list failure",
         error: err.message,
@@ -45,7 +45,7 @@ async function createOrganisation(req, res) {
       console.log("saving organisation");
       console.log(result);
 
-      res.json({
+      return res.json({
         status: "success",
         message: "organisation saved",
         result: result,
@@ -54,7 +54,7 @@ async function createOrganisation(req, res) {
   } catch (err) {
     console.log("error saving organisation");
     console.log(err);
-    res.json({
+    return res.json({
       status: "fail",
       message: "organisation save failure",
       error: err.message,
@@ -68,18 +68,18 @@ async function getOrganisaion(req, res) {
   try {
     const organisation = await Organisation.findById(id);
     if (!organisation) {
-      res.json({
+      return res.json({
         status: "fail",
         message: "organisation not found",
       });
     }
-    res.json({
+    return res.json({
       status: "success",
       message: "Organisation found",
       result: organisation,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "Organisation find failure",
       error: error.message,
@@ -93,7 +93,7 @@ async function updateOrganisation(req, res) {
   const organisation = await Organisation.findById(id);
 
   if (!organisation) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "Organisation does not exist",
     });
@@ -105,13 +105,13 @@ async function updateOrganisation(req, res) {
       { new: true }
     );
 
-    res.json({
+    return res.json({
       status: "success",
       message: "Organisation updated",
       result: updatedOrganisation,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "Organisation update failure",
       error: error.message,
@@ -124,7 +124,7 @@ async function deleteOrganisation(req, res) {
   const organisation = await Organisation.findById(id);
 
   if (!organisation) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "Organisation does not exist",
     });
@@ -132,7 +132,7 @@ async function deleteOrganisation(req, res) {
   try {
     const deletedOrganisation = await Organisation.deleteOne({ _id: id });
 
-    res.json({
+    return res.json({
       status: "success",
       message: "Organisation deleted",
       result: deletedOrganisation,

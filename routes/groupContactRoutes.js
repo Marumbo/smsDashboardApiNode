@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-// Country codes
+// Group Contact Routes
 
 router.get("/all", getAllGroupContacts);
 router.get("/:id", getGroupContact);

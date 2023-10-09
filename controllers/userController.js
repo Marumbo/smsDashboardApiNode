@@ -33,7 +33,7 @@ async function createUser(req, res) {
     ObjectId(userData.organisation_id)
   );
   if (!organisation) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "organisation doesnt exist, cannot create user",
     });
@@ -43,7 +43,7 @@ async function createUser(req, res) {
   });
 
   if (userCheck) {
-    res.json({
+    return res.json({
       status: "faile",
       message: "user with that email already exists",
       result: result,
@@ -60,7 +60,7 @@ async function createUser(req, res) {
       console.log("saving user");
       console.log(result);
 
-      res.json({
+      return res.json({
         status: "success",
         message: "user saved",
         result: result,
@@ -69,7 +69,7 @@ async function createUser(req, res) {
     .catch((error) => {
       console.log("error saving user");
       console.log(error);
-      res.json({
+      return res.json({
         status: "fail",
         message: "user save failure",
         error: error.message,
@@ -83,18 +83,18 @@ async function getUser(req, res) {
   try {
     const user = await User.findById(id);
     if (!user) {
-      res.json({
+      return res.json({
         status: "fail",
         message: "user not found",
       });
     }
-    res.json({
+    return res.json({
       status: "success",
       message: "user found",
       result: user,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "user find failure",
       error: error.message,
@@ -110,14 +110,14 @@ async function updateUser(req, res) {
   );
 
   if (!organisation) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "organisation does not exist, cannot update user",
     });
   }
   const userFind = await User.findById(id);
   if (!userFind) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "User does not exist.",
     });
@@ -128,13 +128,13 @@ async function updateUser(req, res) {
       new: true,
     });
 
-    res.json({
+    return res.json({
       status: "success",
       message: "User updated",
       result: updatedUser,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "User update failure",
       error: error.message,
@@ -147,7 +147,7 @@ async function deleteUser(req, res) {
   const user = await User.findById(id);
 
   if (!user) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "user does not exist",
     });
@@ -155,13 +155,13 @@ async function deleteUser(req, res) {
   try {
     const deletedUser = await User.deleteOne({ _id: id });
 
-    res.json({
+    return res.json({
       status: "success",
       message: "User deleted",
       result: deletedUser,
     });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "fail",
       message: "User delete failure",
       error: error.message,

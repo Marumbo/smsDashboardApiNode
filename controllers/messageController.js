@@ -63,14 +63,14 @@ const send_sms = async (req, res) => {
       .catch((err) => {
         console.log("error saving message");
         console.log(err);
-        res.json({
+        return res.json({
           status: "fail",
           message: "message save failure",
           error: err.message,
         });
       });
   } else {
-    res.json({
+    return res.json({
       status: "fail",
       message: "message sending failure",
       error: result.message,
@@ -116,7 +116,7 @@ const message_create_post = async (req, res) => {
       console.log("saving message");
       console.log(result);
 
-      res.json({
+      return res.json({
         status: "success",
         message: "message saved",
         result: result,
@@ -125,7 +125,7 @@ const message_create_post = async (req, res) => {
     .catch((err) => {
       console.log("error saving message");
       console.log(err);
-      res.json({
+      return res.json({
         status: "fail",
         message: "message save failure",
         error: err.message,
