@@ -1,7 +1,9 @@
 const Contact = require("../models/contact");
+const csv = require("csvtojson");
+const fs = require("fs");
 
 async function getAllContacts(req, res) {
-  await Contact.find()
+  await Contact.find().sort({ createdAt: -1 })
     .then((result) => {
       console.log("Returning all contact");
       return res.json({
@@ -63,6 +65,51 @@ async function createContact(req, res) {
         error: error.message,
       });
     });
+}
+
+async function createContactFromCsv(req, res, next) {
+
+  csv().fromFile(req.file.path).then(async (jsonObj) => {
+
+    const availableContacts = await Contact.find();
+
+    const contactsToSave = jsonObj.filter(contact => {
+      const isAvailable = availableContacts.some(aContact => aContact.email === contact.email || aContact.phone_number === contact.phone_number);
+      if (!isAvailable) return true;
+      console.log(`Contact with ${contact.email} or ${contact.phone_number} already exists`);
+      return false;
+    });
+
+    if (contactsToSave.length === 0) {
+      // console.log("No contacts to save", contactsToSave);
+      // clear uploads folder
+      fs.unlinkSync(req.file.path);
+      return res.status(200).json({
+        status: "success",
+        message: "No contacts to save",
+      })
+    } else {
+
+      try {
+        const savedContacts = await Contact.insertMany(contactsToSave, { ordered: false });
+        // console.log("savedContacts", savedContacts);
+        if (savedContacts.insertedCount > 0) {
+          return res.status(200).json({
+            status: "success",
+            message: "Contacts saved successfully!",
+          });
+        }
+      } catch (error) {
+        return res.status(500).json({
+          status: "fail",
+          message: "Contacts save failure",
+          error: error.message,
+        });
+      }
+    }
+  })
+
+  // next()
 }
 
 async function getContact(req, res) {
@@ -155,6 +202,7 @@ module.exports = {
   getAllContacts,
   getContact,
   createContact,
+  createContactFromCsv,
   updateContact,
   deleteContact,
 };

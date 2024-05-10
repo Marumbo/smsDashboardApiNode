@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const csv = require("csvtojson");
+const multer = require("multer");
+
 const messageRouter = require("./routes/messageRoutes");
 const purchaseRouter = require("./routes/purchaseRoutes");
 const organisationRouter = require("./routes/organisationRoutes");
@@ -12,11 +15,8 @@ const groupRouter = require("./routes/groupRoutes");
 const groupContactsRouter = require("./routes/groupContactRoutes");
 
 require("dotenv").config();
-
 const app = express();
-
 app.use(express.json());
-
 app.use(cors());
 
 mongoose
@@ -50,5 +50,6 @@ app.use("/users", userRouter);
 app.use("/countryCodes", countryCodeRouter);
 app.use("/smsPriceSettings", smsPriceSettingsRouter);
 app.use("/contacts", contactRouter);
+app.use("/contacts/createFromCsv", contactRouter);
 app.use("/groups", groupRouter);
 app.use("/groupContacts", groupContactsRouter);
