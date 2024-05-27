@@ -1,0 +1,30 @@
+services:
+  api:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      - dbURI=mongodb+srv://testUser:2TestUser@node-practice.4fa5l.mongodb.net/sms-dashboard?retryWrites=true&w=majority
+      - public_key=pk_live_51L84wFBJ7WGCnfVP9kQpnsl2NDlw0TLrJCnmMlEjJUH6gOApYnmQi03KIfweLYHVJJLV7LCVXdyE3aiy1FXfnL9p005K8cS0uY
+      - username=sandbox
+      - apiKey=e1f52557ba4b192f302d9ea15e3786333fffe5cbfa73c3d82ad6a2db60ce43a0
+      - PORT=8000
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: .
+          target: /app
+          action: sync
+  db: 
+    image: mongo
+    volumes:
+      - db-data:/data/db
+    ports:
+      - 27017:27017
+volumes:
+  db-data:
