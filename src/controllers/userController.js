@@ -27,7 +27,6 @@ async function createUser(req, res) {
   //TODO: hash password
   //TODO: Check for required values
   const userData = req.body;
-  console.log(userData);
 
   const organisation = await Organisation.findById(
     ObjectId(userData.organisation_id)
