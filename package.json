@@ -20,7 +20,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "docker:build": "docker compose up --build ",
+    "docker:down": "docker compose down"
   },
   "author": "Marumbo Sichinga",
   "license": "ISC",

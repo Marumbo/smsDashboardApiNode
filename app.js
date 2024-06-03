@@ -46,7 +46,7 @@ app.get("/public-key", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/messages", accessResource ,messageRouter);
+app.use("/messages" ,messageRouter);
 
 app.use("/purchase", purchaseRouter);
 app.use("/organisations", organisationRouter);

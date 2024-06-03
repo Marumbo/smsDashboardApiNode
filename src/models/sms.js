@@ -1,5 +1,3 @@
-const { Timestamp } = require("bson");
-const { builtinModules } = require("module");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -27,6 +25,9 @@ const smsSchema = new Schema(
     countryCode: {
       type: String,
       required: true,
+    },
+    status: {
+      type: String,
     },
     isGroup: {
       type: Boolean,

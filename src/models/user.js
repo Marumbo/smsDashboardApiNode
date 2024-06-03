@@ -31,6 +31,11 @@ const userSchema = new Schema(
     phone_number: {
       type: String,
       required: true,
+      unique: true,
+    },
+    balance: {
+      type: Number,
+      default: 5000,
     },
   },
   { timestamps: true }

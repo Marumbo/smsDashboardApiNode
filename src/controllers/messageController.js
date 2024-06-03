@@ -1,7 +1,9 @@
-const Message = require("../models/message");
-const Sms = require("../models/sms");
 require("dotenv").config();
 const AfricasTalking = require("africastalking");
+
+const Message = require("../models/message");
+const Sms = require("../models/sms");
+const User = require("../models/user");
 
 const africastalking = AfricasTalking({
   apiKey: process.env.apiKey || "",
@@ -32,8 +34,6 @@ async function sendMessage(numbers, message, from) {
 }
 
 const send_sms = async (req, res) => {
-  //console.log("request body", req.body);
-
   const { numbers, message, from, isGroup } = req.body;
 
   const result = await sendMessage(numbers, message, from);
@@ -46,34 +46,49 @@ const send_sms = async (req, res) => {
       price: "15",
       countryCode: "+250",
       isGroup: isGroup,
+      status: "sent",
     });
 
-    smsEntry
-      .save()
-      .then((result) => {
-        console.log("saving sms");
-        console.log(result);
-
-        return res.json({
-          status: "success",
-          message: "message saved",
-          result: result,
-        });
-      })
-      .catch((err) => {
-        console.log("error saving message");
-        console.log(err);
+    try {
+      const user = await User.findOne({ phone_number: from });
+      if (!user) {
         return res.json({
           status: "fail",
-          message: "message save failure",
-          error: err.message,
+          message: "user not found",
         });
+      }
+      await User.updateOne(
+        { phone_number: from },
+        { balance: user.balance - 15 }
+      );
+      const newSms = await smsEntry.save();
+      return res.json({
+        status: "success",
+        message: "message saved",
+        result: newSms,
       });
+    } catch (error) {
+      return res.json({
+        status: "fail",
+        message: "message save failure",
+        error: error.message,
+      });
+    }
   } else {
+    const smsEntry = new Sms({
+      smsSenderId: from,
+      message: message,
+      number: numbers,
+      price: "15",
+      countryCode: "+250",
+      isGroup: isGroup,
+      status: "failed",
+    });
+    await smsEntry.save();
     return res.json({
       status: "fail",
       message: "message sending failure",
-      error: result.message,
+      result: result.message,
     });
   }
 };
