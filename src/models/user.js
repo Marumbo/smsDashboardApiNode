@@ -4,14 +4,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    first_name: {
-      type: String,
-      required: true,
-    },
-    last_name: {
-      type: String,
-      required: true,
-    },
+    full_name: { type: String, required: true },
     email: {
       type: String,
       required: true,
@@ -22,11 +15,10 @@ const userSchema = new Schema(
     },
     organisation_id: {
       type: String,
-      required: true,
     },
     user_type: {
       type: String,
-      required: true,
+      default: "user",
     },
     phone_number: {
       type: String,
