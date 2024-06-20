@@ -31,7 +31,12 @@ const smsSchema = new Schema(
     },
     isGroup: {
       type: Boolean,
-      required: true,
+      default: false,
+      // required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

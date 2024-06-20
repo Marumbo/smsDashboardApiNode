@@ -47,6 +47,7 @@ const send_sms = async (req, res) => {
       countryCode: "+250",
       isGroup: isGroup,
       status: "sent",
+      user: req.user.id,
     });
 
     try {
@@ -83,6 +84,7 @@ const send_sms = async (req, res) => {
       countryCode: "+250",
       isGroup: isGroup,
       status: "failed",
+      user: req.user.id,
     });
     await smsEntry.save();
     return res.json({
@@ -93,25 +95,41 @@ const send_sms = async (req, res) => {
   }
 };
 
-async function message_index(req, res) {
-  await Message.find()
-    .then((result) => {
-      console.log("Returning all messages");
+async function get_sms_messages(req, res) {
+  try {
+    const messages = await Sms.find().populate("user","full_name phone_number email");
 
-      return res.json({
-        status: "success",
-        message: "message list",
-        result: result,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.json({
-        status: "fail",
-        message: " message list failure",
-        error: err.message,
-      });
+    return res.json({
+      status: "success",
+      message: "message list",
+      result: messages,
     });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      status: "fail",
+      message: " message list failure",
+      error: error.message,
+    });
+  }
+}
+
+const delete_sms_message = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Sms.findByIdAndDelete(id);
+    return res.json({
+      status: "success",
+      message: "message deleted",
+    });
+  } catch (error) {
+    return res.json({
+      status: "fail",
+      message: "message delete failure",
+      error: error.message,
+    });
+  }
+
 }
 
 const message_create_post = async (req, res) => {
@@ -149,7 +167,8 @@ const message_create_post = async (req, res) => {
 };
 
 module.exports = {
-  message_index,
-  message_create_post,
   send_sms,
+  get_sms_messages,
+  delete_sms_message,
+  message_create_post,
 };
