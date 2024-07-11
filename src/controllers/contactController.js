@@ -1,5 +1,4 @@
 const Contact = require("../models/contact");
-const csv = require("csvtojson");
 const fs = require("fs");
 
 async function getAllContacts(req, res) {
@@ -23,93 +22,93 @@ async function getAllContacts(req, res) {
 }
 
 async function createContact(req, res) {
-  const contactData = req.body;
-  console.log("Contact data ", contactData);
-  //check if data is not empty
+  const { name, email, phone_number, description } = req.body;
 
   const contactCheck = await Contact.find({
-    phone_number: contactData.phone_number,
+    $or: [ { email: email }, { phone_number: phone_number }],
   });
 
-  console.log("Contact check", contactCheck);
-
   if (contactCheck.length) {
-    return res.json({
+    return res.status(409).json({
       status: "fail",
-      message: "contact already exists",
+      message: "Contact already exists",
     });
   }
 
-  const contactEntry = new Contact({
-    ...contactData,
-  });
-
-  contactEntry
-    .save()
-    .then((result) => {
-      console.log("saving contact");
-      console.log(result);
-
-      return res.json({
-        status: "success",
-        message: "contact saved",
-        result: result,
-      });
+  try {
+    const newContact = new Contact({
+      name,
+      email,
+      phone_number,
+      description,
     })
-    .catch((error) => {
-      console.log("error saving contact");
-      console.log(error);
-      return res.json({
-        status: "fail",
-        message: "contact save failure",
-        error: error.message,
-      });
-    });
+    await newContact.save();
+    return res.status(201).json({
+      status: "success",
+      message: "Contact added successfully",
+      result: newContact,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: "An error occurred while creating the contact",
+      error: error.message,
+    })
+  }
 }
 
-async function createContactFromCsv(req, res, next) {
+async function bulkContacts(req, res) {
+  const { contacts } = req.body;
+  
+  // Check if contacts array is provided
+  if (!Array.isArray(contacts) || contacts.length === 0) {
+    return res.status(400).json({
+      status: "fail",
+      message: "No contacts provided",
+    });
+  }
 
-  csv().fromFile(req.file.path).then(async (jsonObj) => {
+  // Create an array of search criteria for existing contacts
+  const searchCriteria = contacts.flatMap(contact => {
+    const criteria = [];
+    if (contact.phone_number) {
+      criteria.push({ phone_number: contact.phone_number });
+    }
+    if (contact.email) {
+      criteria.push({ email: contact.email });
+    }
+    return criteria;
+  });
 
-    const availableContacts = await Contact.find();
-
-    const contactsToSave = jsonObj.filter(contact => {
-      const isAvailable = availableContacts.some(aContact => aContact.email === contact.email || aContact.phone_number === contact.phone_number);
-      if (!isAvailable) return true;
-      console.log(`Contact with ${contact.email} or ${contact.phone_number} already exists`);
-      return false;
+  try {
+    // Find existing contacts
+    const existingContacts = await Contact.find({
+      $or: searchCriteria
     });
 
-    if (contactsToSave.length === 0) {
-      // console.log("No contacts to save", contactsToSave);
-      // clear uploads folder
-      fs.unlinkSync(req.file.path);
-      return res.status(200).json({
-        status: "success",
-        message: "No contacts to save",
-      })
-    } else {
-
-      try {
-        const savedContacts = await Contact.insertMany(contactsToSave, { ordered: false });
-        // console.log("savedContacts", savedContacts);
-        if (savedContacts.insertedCount > 0) {
-          return res.status(200).json({
-            status: "success",
-            message: "Contacts saved successfully!",
-          });
-        }
-      } catch (error) {
-        return res.status(500).json({
-          status: "fail",
-          message: "Contacts save failure",
-          error: error.message,
-        });
-      }
+    if (existingContacts.length) {
+      return res.status(409).json({
+        status: "fail",
+        message: "Some contacts already exist",
+        existingContacts,
+      });
     }
-  })
 
-  // next()
+    // Create new contacts
+    const newContact = await Contact.insertMany(contacts);
+
+    return res.status(201).json({
+      status: "success",
+      message: "Multiple Contacts added successfully",
+      result: newContact,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: "An error occurred while creating the contact",
+      error: error.message,
+    })
+  }
 }
 
 async function getContact(req, res) {
@@ -117,22 +116,22 @@ async function getContact(req, res) {
 
   try {
     const contact = await Contact.findById(id);
-    console.log("Get contact, contact", contact);
+
     if (!contact) {
-      return res.json({
+      return res.status(404).json({
         status: "fail",
-        message: "contact not found",
+        message: "Contact not found",
       });
     }
-    return res.json({
+    return res.status(200).json({
       status: "success",
-      message: "contact found",
+      message: "Contact found",
       result: contact,
     });
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       status: "fail",
-      message: "contact find failure",
+      message: "Contact find failure",
       error: error.message,
     });
   }
@@ -143,11 +142,11 @@ async function updateContact(req, res) {
   const contactData = req.body;
 
   const contactFind = await Contact.findById(id);
-  console.log("contact", contactFind);
+
   if (!contactFind) {
     return res.json({
       status: "fail",
-      message: "Contact does not exist.",
+      message: "Contact does not exist",
     });
   }
 
@@ -202,7 +201,7 @@ module.exports = {
   getAllContacts,
   getContact,
   createContact,
-  createContactFromCsv,
+  bulkContacts,
   updateContact,
   deleteContact,
 };
