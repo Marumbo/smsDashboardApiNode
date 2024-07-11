@@ -68,21 +68,6 @@ async function bulkContacts(req, res) {
     });
   }
 
-  // const existingContacts = await Contact.find({
-  //   $or: contacts.map(contact => ({
-  //     phone_number: contact.phone_number,
-  //     email: contact.email
-  //   }))
-  // });
-
-  // if (existingContacts.length) {
-  //   return res.status(409).json({
-  //     status: "fail",
-  //     message: "Contact already exists",
-  //   });
-
-  // }
-
   // Create an array of search criteria for existing contacts
   const searchCriteria = contacts.flatMap(contact => {
     const criteria = [];
@@ -133,18 +118,18 @@ async function getContact(req, res) {
     const contact = await Contact.findById(id);
 
     if (!contact) {
-      return res.json({
+      return res.status(404).json({
         status: "fail",
         message: "Contact not found",
       });
     }
-    return res.json({
+    return res.status(200).json({
       status: "success",
       message: "Contact found",
       result: contact,
     });
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       status: "fail",
       message: "Contact find failure",
       error: error.message,

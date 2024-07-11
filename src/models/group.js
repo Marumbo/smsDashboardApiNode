@@ -12,6 +12,12 @@ const GroupSchema = new Schema(
       type: String,
       required: true,
     },
+    contacts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Contact",
+      },
+    ],
   },
   { timestamps: true }
 );
