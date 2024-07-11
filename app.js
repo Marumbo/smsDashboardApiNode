@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const csv = require("csvtojson");
-const multer = require("multer");
 
 const messageRouter = require("./src/routes/messageRoutes.js");
 const purchaseRouter = require("./src/routes/purchaseRoutes.js");
@@ -38,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   console.log("infotext api");
-  res.send("infotextapi");
+  res.send("Welcome to Infotext api Home Route :: 🚀🚀🚀");
 });
 
 app.get("/public-key", (req, res) => {
@@ -58,6 +56,5 @@ app.use("/users", userRouter);
 app.use("/countryCodes", countryCodeRouter);
 app.use("/smsPriceSettings", smsPriceSettingsRouter);
 app.use("/contacts", contactRouter);
-app.use("/contacts/createFromCsv", contactRouter);
 app.use("/groups", groupRouter);
 app.use("/groupContacts", groupContactsRouter);

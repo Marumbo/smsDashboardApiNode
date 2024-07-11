@@ -10,7 +10,7 @@ const getAllGroupContacts = (req, res) => {
       console.log("Returning all group contacts lists");
       return res.json({
         status: "success",
-        message: "group contact lists",
+        message: "Group contact lists",
         result: result,
       });
     })
@@ -67,12 +67,9 @@ async function createGroupContacts(req, res) {
     });
 
     groupContactEntry.save().then((result) => {
-      console.log("saving group contact");
-      console.log(result);
-
       return res.json({
         status: "success",
-        message: "group contact saved",
+        message: "Group contact saved",
         result: result,
       });
     });
@@ -81,7 +78,7 @@ async function createGroupContacts(req, res) {
     console.log(error);
     return res.json({
       status: "fail",
-      message: "group contact save failure",
+      message: "Group contact save failure",
       error: error.message,
     });
   }
@@ -95,18 +92,18 @@ async function getGroupContact(req, res) {
     if (!groupContact) {
       return res.json({
         status: "fail",
-        message: "group contact not found",
+        message: "Group contact not found",
       });
     }
     return res.json({
       status: "success",
-      message: "group contact found",
+      message: "Group contact found",
       result: groupContact,
     });
   } catch (error) {
     return res.json({
       status: "fail",
-      message: "group find failure",
+      message: "Group find failure",
       error: error.message,
     });
   }
@@ -121,7 +118,7 @@ async function addContactToGroup(req, res) {
     if (!groupContactFind) {
       return res.json({
         status: "fail",
-        message: "group does not exist.",
+        message: "Group does not exist.",
       });
     }
 
@@ -130,7 +127,7 @@ async function addContactToGroup(req, res) {
     if (!groupCheck) {
       return res.json({
         status: "fail",
-        message: "group id does not exist",
+        message: "Group id does not exist",
       });
     }
 
