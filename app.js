@@ -28,8 +28,11 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-console.log("Started server on port 4242!");
-app.listen(process.env.PORT || 4242);
+const port = process.env.PORT || 4242;
+app.listen(port, () => {
+  console.log("Server started on port " + port);
+}
+);
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -46,7 +49,7 @@ app.get("/public-key", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/messages", accessResource ,messageRouter);
+app.use("/messages" ,messageRouter);
 
 app.use("/purchase", purchaseRouter);
 app.use("/organisations", organisationRouter);

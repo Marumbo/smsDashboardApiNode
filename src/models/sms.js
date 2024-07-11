@@ -1,5 +1,3 @@
-const { Timestamp } = require("bson");
-const { builtinModules } = require("module");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -28,9 +26,17 @@ const smsSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+    },
     isGroup: {
       type: Boolean,
-      required: true,
+      default: false,
+      // required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }
