@@ -11,6 +11,10 @@ services:
       - username=sandbox
       - apiKey=e1f52557ba4b192f302d9ea15e3786333fffe5cbfa73c3d82ad6a2db60ce43a0
       - PORT=8000
+      - JWT_SECRET=e1f52557ba4b192f302d9ea15e3786333fffe5cbfa
+      - EMAIL_USER=9e5wD@example.com
+      - EMAIL_PASS=Test@123
+      - CLIENT_URL=https://infotext.netlify.app/
     develop:
       watch:
         - path: ./package.json
