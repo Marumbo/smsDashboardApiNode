@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
 const messageRouter = require("./src/routes/messageRoutes.js");
 const purchaseRouter = require("./src/routes/purchaseRoutes.js");
@@ -14,11 +15,12 @@ const authRoutes = require("./src/routes/authRoutes.js");
 
 const { accessResource } = require("./src/middlewares/accessResource.js");
 
-require("dotenv").config();
+dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.dbURI)
   .then((result) => {
