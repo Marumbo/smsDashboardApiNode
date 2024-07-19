@@ -14,8 +14,8 @@ const smsSchema = new Schema(
       required: true,
     },
 
-    number: {
-      type: String,
+    numbers: {
+      type: [String],
       required: true,
     },
     price: {

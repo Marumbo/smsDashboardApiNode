@@ -14,31 +14,65 @@ const africastalking = AfricasTalking({
 const sms = africastalking.SMS;
 
 async function sendMessage(numbers, message, from) {
-  const options = {
-    to: numbers,
-    message: message,
-    from: from,
-  };
-  try {
-    await sms.send(options);
-    return {
-      isSuccess: true,
-      message: "message sent",
-    };
-  } catch (e) {
+  console.log(numbers, message, from);
+
+  if (!Array.isArray(numbers)) {
     return {
       isSuccess: false,
-      message: e.toString(),
+      message: "Numbers should be an array",
     };
   }
+
+  const results = await Promise.all(
+    numbers.map(async (number) => {
+      const options = {
+        to: number,
+        message: message,
+        from: from,
+      };
+      try {
+        await sms.send(options);
+        return {
+          number: number,
+          isSuccess: true,
+          message: "message sent",
+        };
+      } catch (e) {
+        return {
+          number: number,
+          isSuccess: false,
+          message: e.toString(),
+        };
+      }
+    })
+  );
+
+  return results;
 }
+
 
 const send_sms = async (req, res) => {
   const { numbers, message, from, isGroup } = req.body;
 
-  const result = await sendMessage(numbers, message, from);
+  // Check user account balance 
+  const user = await User.findOne({ phone_number: from });
+  if (!user) {
+    return res.json({
+      status: "fail",
+      message: "user not found",
+    });
+  }
+  if (user.balance < 15 * numbers.length) {
+    return res.json({
+      status: "fail",
+      message: "insufficient balance",
+    });
+  }
 
-  if (result.isSuccess) {
+  const result = await sendMessage(numbers, message, from);
+  console.log("result", result);
+
+  if (result.some((r) => r.isSuccess)) {
     const smsEntry = new Sms({
       smsSenderId: from,
       message: message,
@@ -51,16 +85,9 @@ const send_sms = async (req, res) => {
     });
 
     try {
-      const user = await User.findOne({ phone_number: from });
-      if (!user) {
-        return res.json({
-          status: "fail",
-          message: "user not found",
-        });
-      }
       await User.updateOne(
         { phone_number: from },
-        { balance: user.balance - 15 }
+        { balance: user.balance - 15 * numbers.length }
       );
       const newSms = await smsEntry.save();
       return res.json({
@@ -97,7 +124,7 @@ const send_sms = async (req, res) => {
 
 async function get_sms_messages(req, res) {
   try {
-    const messages = await Sms.find().populate("user","full_name phone_number email");
+    const messages = await Sms.find().populate("user", "full_name phone_number email");
 
     return res.json({
       status: "success",
