@@ -124,7 +124,8 @@ const send_sms = async (req, res) => {
 
 async function get_sms_messages(req, res) {
   try {
-    const messages = await Sms.find().populate("user", "full_name phone_number email");
+    const messages = await Sms.find().populate("user", "full_name phone_number email")
+    .sort({ createdAt: -1 });
 
     return res.json({
       status: "success",
