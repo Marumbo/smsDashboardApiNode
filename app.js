@@ -14,6 +14,7 @@ const groupRouter = require("./src/routes/groupRoutes.js");
 const authRoutes = require("./src/routes/authRoutes.js");
 
 const { accessResource } = require("./src/middlewares/accessResource.js");
+const { sendEmail } = require("./src/utils/sendMail.js");
 
 dotenv.config();
 const app = express();
@@ -34,12 +35,33 @@ app.listen(port, () => {
 }
 );
 
+
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   console.log("infotext api");
   res.send("Welcome to Infotext api Home Route :: 🚀🚀🚀");
 });
+
+app.post("/contact-form", async (req, res) => {
+  const { from, message, subject } = req.body
+
+  if (!from || !message || !subject) {
+    return res.status(400).json({ status: 'failed', error: 'Please provide all required fields: to, subject, message' })
+  }
+
+  const mailOptions = {
+    from,
+    to: process.env.EMAIL_USER,
+    subject,
+    text: message,
+  };
+try {
+  await sendEmail(mailOptions)
+} catch (error) {
+  console.log(error);
+}
+})
 
 app.get("/public-key", (req, res) => {
   console.log("request for public key");
@@ -49,7 +71,7 @@ app.get("/public-key", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/messages" ,messageRouter);
+app.use("/messages", messageRouter);
 
 app.use("/purchase", purchaseRouter);
 app.use("/organisations", organisationRouter);
