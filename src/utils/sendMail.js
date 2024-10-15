@@ -3,24 +3,22 @@ const nodemailer = require("nodemailer");
 async function sendEmail(mailOptions) {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      // service: "gmail",
+      // auth: {
+      //   user: process.env.EMAIL_USER,
+      //   pass: process.env.EMAIL_PASSWORD,
+      // },
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for port 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: "maddison53@ethereal.email",
+        pass: "jn7jnAPss4f63QBp6D",
       },
     });
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res
-          .status(500)
-          .json({ error: `Error sending email: ${error.message}` });
-      }
-      res
-        .status(200)
-        .json({ status: "success", message: "Email sent successfully", info });
-    });
+    const info = await transporter.sendMail(mailOptions);
   } catch (error) {
-    res.status(500).send({ status: "fail", message: error.message });
+    console.log(error, "Something went wrong when sending the email");
   }
 }
 

@@ -55,12 +55,17 @@ app.post("/contact-form", async (req, res) => {
     to: process.env.EMAIL_USER,
     subject,
     text: message,
+    // html: `<b>${message}</b>`, // html body
   };
-try {
-  await sendEmail(mailOptions)
-} catch (error) {
-  console.log(error);
-}
+
+  try {
+    await sendEmail(mailOptions)
+
+    return res.status(200).json({ status: "success", message: "Email sent successfully" });
+
+  } catch (error) {
+    return res.status(500).json({ error: `Error sending email: ${error.message}` });
+  }
 })
 
 app.get("/public-key", (req, res) => {
