@@ -4,7 +4,8 @@ const Contact = require("../models/contact");
 
 const getAllGroups = async (req, res) => {
   try {
-    const result = await Group.find().populate('contacts');
+    const result = await Group.find().populate('contacts')
+    .sort({ createdAt: -1 });
 
     return res.status(200).json({
       status: "success",

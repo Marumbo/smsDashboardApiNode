@@ -1,25 +1,20 @@
 const nodemailer = require("nodemailer");
 
-async function sendEmail(userEmail) {
-    try {
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-        });
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: userEmail,
-            subject: "Email Verification",
-            text: `Click on the link to verify your email ${process.env.CLIENT_URL}/verifyEmail/${req.body.emailToken}`,
-        };
-        await transporter.sendMail(mailOptions);
-        res.status(200).send({ status: "success", message: "email sent" });
-    } catch (error) {
-        res.status(500).send({ status: "fail", message: error.message });
-    }
+async function sendEmail(mailOptions) {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, 
+      auth: {
+        user: "maddison53@ethereal.email",
+        pass: "jn7jnAPss4f63QBp6D",
+      },
+    });
+    const info = await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log(error, "Something went wrong when sending the email");
+  }
 }
 
-module.exports = { sendEmail }
+module.exports = { sendEmail };

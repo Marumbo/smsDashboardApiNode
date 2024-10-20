@@ -1,7 +1,10 @@
 const User = require("../models/user");
-
+const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
+dotenv.config();
+
 async function login(req, res) {
   try {
     const { phone_or_email, password } = req.body;
@@ -36,7 +39,7 @@ async function login(req, res) {
         id: userExists._id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
     res
       .status(200)
