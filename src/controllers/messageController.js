@@ -14,7 +14,7 @@ const africastalking = AfricasTalking({
 const sms = africastalking.SMS;
 
 async function sendMessage(numbers, message, from) {
-  console.log(numbers, message, from);
+  // console.log(numbers, message, from);
 
   if (!Array.isArray(numbers)) {
     return {
@@ -70,7 +70,7 @@ const send_sms = async (req, res) => {
   }
 
   const result = await sendMessage(numbers, message, from);
-  console.log("result", result);
+  // console.log("result", result);
 
   if (result.some((r) => r.isSuccess)) {
     const smsEntry = new Sms({
