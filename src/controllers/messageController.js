@@ -54,6 +54,13 @@ async function sendMessage(numbers, message, from) {
 const send_sms = async (req, res) => {
   const { numbers, message, from, isGroup } = req.body;
 
+  if (!numbers || !message || !from) {
+    return res.json({
+      status: "fail",
+      message: "Required fields are missing",
+    });
+  }
+
   // Check user account balance 
   const user = await User.findOne({ phone_number: from });
   if (!user) {

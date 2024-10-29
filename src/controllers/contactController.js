@@ -24,6 +24,13 @@ async function getAllContacts(req, res) {
 async function createContact(req, res) {
   const { name, email, phone_number, description } = req.body;
 
+  //check if data is not empty
+  if (!name || !email || !phone_number) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Contact name, email or phone number is required",
+    });
+  }
   const contactCheck = await Contact.find({
     $or: [ { email: email }, { phone_number: phone_number }],
   });
