@@ -12,6 +12,7 @@ const africastalking = AfricasTalking({
 
 // Get the SMS service
 const sms = africastalking.SMS;
+const airtime = africastalking.AIRTIME;
 
 async function sendMessage(numbers, message, from) {
   // console.log(numbers, message, from);
