@@ -21,7 +21,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "docker:build": "docker compose up --build ",
-    "docker:watch": "docker compose watch",
+    "docker:watch": "docker compose up --watch",
     "docker:down": "docker compose down"
   },
   "author": "Marumbo Sichinga",

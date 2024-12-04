@@ -18,13 +18,14 @@ services:
       - WEBHOOK_SECRET=secretcallbacksecret
     develop:
       watch:
-        - path: ./package.json
-          action: rebuild
-        - path: ./package-lock.json
-          action: rebuild
-        - path: .
+        - action: sync
+          path: ./src
           target: /app
-          action: sync
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
   db: 
     image: mongo
     volumes:
