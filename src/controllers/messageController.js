@@ -12,9 +12,10 @@ const africastalking = AfricasTalking({
 
 // Get the SMS service
 const sms = africastalking.SMS;
+const airtime = africastalking.AIRTIME;
 
 async function sendMessage(numbers, message, from) {
-  console.log(numbers, message, from);
+  // console.log(numbers, message, from);
 
   if (!Array.isArray(numbers)) {
     return {
@@ -54,6 +55,13 @@ async function sendMessage(numbers, message, from) {
 const send_sms = async (req, res) => {
   const { numbers, message, from, isGroup } = req.body;
 
+  if (!numbers || !message || !from) {
+    return res.json({
+      status: "fail",
+      message: "Required fields are missing",
+    });
+  }
+
   // Check user account balance 
   const user = await User.findOne({ phone_number: from });
   if (!user) {
@@ -70,7 +78,7 @@ const send_sms = async (req, res) => {
   }
 
   const result = await sendMessage(numbers, message, from);
-  console.log("result", result);
+  // console.log("result", result);
 
   if (result.some((r) => r.isSuccess)) {
     const smsEntry = new Sms({

@@ -12,7 +12,7 @@ async function accessResource(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).send({ status: "fail", message: "unauthorized" });
+    return res.status(401).json({ status: "fail", message: "unauthorized" });
   }
 }
 

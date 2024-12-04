@@ -12,6 +12,7 @@ const smsPriceSettingsRouter = require("./src/routes/smsPriceSettingsRoutes.js")
 const contactRouter = require("./src/routes/contactRoutes.js");
 const groupRouter = require("./src/routes/groupRoutes.js");
 const authRoutes = require("./src/routes/authRoutes.js");
+const callbackRoutes = require("./src/routes/callbackRoutes.js");
 
 const { accessResource } = require("./src/middlewares/accessResource.js");
 const { sendEmail } = require("./src/utils/sendMail.js");
@@ -69,9 +70,13 @@ app.post("/contact-form", async (req, res) => {
 })
 
 app.get("/public-key", (req, res) => {
-  console.log("request for public key");
   res.send({
     "public-key": process.env.public_key,
+  });
+});
+app.get("/webhook-secret", (req, res) => {
+  res.send({
+    "webhook-secret": process.env.WEBHOOK_SECRET,
   });
 });
 
@@ -86,3 +91,4 @@ app.use("/countryCodes", countryCodeRouter);
 app.use("/smsPriceSettings", smsPriceSettingsRouter);
 app.use("/contacts", contactRouter);
 app.use("/groups", groupRouter);
+app.use("/callbacks", callbackRoutes);
