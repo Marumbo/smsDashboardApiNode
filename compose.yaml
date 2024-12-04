@@ -15,6 +15,7 @@ services:
       - EMAIL_USER=9e5wD@example.com
       - EMAIL_PASS=Test@123
       - CLIENT_URL=https://infotext.netlify.app/
+      - WEBHOOK_SECRET=secretcallbacksecret
     develop:
       watch:
         - path: ./package.json
