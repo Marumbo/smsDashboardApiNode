@@ -15,8 +15,6 @@ const sms = africastalking.SMS;
 const airtime = africastalking.AIRTIME;
 
 async function sendMessage(numbers, message, from) {
-  // console.log(numbers, message, from);
-
   if (!Array.isArray(numbers)) {
     return {
       isSuccess: false,
@@ -26,13 +24,25 @@ async function sendMessage(numbers, message, from) {
 
   const results = await Promise.all(
     numbers.map(async (number) => {
+
+      // Console numbers with Rwandan country code
+      // if (number && number.toString().startsWith("+250")) {
+      //   console.log("Rwandan Number", number);
+      // }
       const options = {
         to: number,
         message: message,
         from: from,
       };
       try {
-        await sms.send(options);
+        const response = await sms.send(options);
+        // const { Recipients, Message} = response.SMSMessageData
+
+        // console.log("Response Message ::", Message);
+        // Recipients.forEach((recipient) => {
+        //   console.log("Recipient ::", recipient);
+        // });
+
         return {
           number: number,
           isSuccess: true,
@@ -51,9 +61,9 @@ async function sendMessage(numbers, message, from) {
   return results;
 }
 
-
 const send_sms = async (req, res) => {
   const { numbers, message, from, isGroup } = req.body;
+  const { id, phone_number, email } = req.user;
 
   if (!numbers || !message || !from) {
     return res.json({
@@ -62,8 +72,8 @@ const send_sms = async (req, res) => {
     });
   }
 
-  // Check user account balance 
-  const user = await User.findOne({ phone_number: from });
+  // Check user account balance
+  const user = await User.findOne({ $or: [{ phone_number }, { email }] });
   if (!user) {
     return res.json({
       status: "fail",
@@ -78,7 +88,6 @@ const send_sms = async (req, res) => {
   }
 
   const result = await sendMessage(numbers, message, from);
-  // console.log("result", result);
 
   if (result.some((r) => r.isSuccess)) {
     const smsEntry = new Sms({
@@ -132,8 +141,9 @@ const send_sms = async (req, res) => {
 
 async function get_sms_messages(req, res) {
   try {
-    const messages = await Sms.find().populate("user", "full_name phone_number email")
-    .sort({ createdAt: -1 });
+    const messages = await Sms.find()
+      .populate("user", "full_name phone_number email")
+      .sort({ createdAt: -1 });
 
     return res.json({
       status: "success",
@@ -165,8 +175,7 @@ const delete_sms_message = async (req, res) => {
       error: error.message,
     });
   }
-
-}
+};
 
 const message_create_post = async (req, res) => {
   console.log(req.body);

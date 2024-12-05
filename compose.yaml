@@ -9,7 +9,7 @@ services:
       - dbURI=mongodb+srv://testUser:2TestUser@node-practice.4fa5l.mongodb.net/sms-dashboard?retryWrites=true&w=majority
       - public_key=pk_live_51L84wFBJ7WGCnfVP9kQpnsl2NDlw0TLrJCnmMlEjJUH6gOApYnmQi03KIfweLYHVJJLV7LCVXdyE3aiy1FXfnL9p005K8cS0uY
       - username=sandbox
-      - apiKey=atsk_32de5e174bbfecf005407f215ec13750634201a44906dce317bc09a0213a527086d858e0
+      - apiKey=atsk_bd0591aa00fe1f2dc64392f5c30eba49ac2b7d243437cc1429ff394028034fe369acc102
       - PORT=8000
       - JWT_SECRET=e1f52557ba4b192f302d9ea15e3786333fffe5cbfa
       - EMAIL_USER=9e5wD@example.com
