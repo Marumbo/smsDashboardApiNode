@@ -24,13 +24,13 @@ app.use(cors());
 
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(process.env.dbURI)
+  .connect(process.env.DB_URI)
   .then((result) => {
     console.log("connected to db!");
   })
   .catch((err) => console.log(err));
 
-const port = process.env.PORT || 4242;
+const port = process.env.PORT ?? 4242;
 app.listen(port, () => {
   console.log("Server started on port " + port);
 }
@@ -71,7 +71,7 @@ app.post("/contact-form", async (req, res) => {
 
 app.get("/public-key", (req, res) => {
   res.send({
-    "public-key": process.env.public_key,
+    "public-key": process.env.PUBLIC_KEY,
   });
 });
 app.get("/webhook-secret", (req, res) => {
