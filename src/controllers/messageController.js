@@ -6,8 +6,8 @@ const Sms = require("../models/sms");
 const User = require("../models/user");
 
 const africastalking = AfricasTalking({
-  apiKey: process.env.apiKey || "",
-  username: process.env.username || "sandbox",
+  apiKey: process.env.API_KEY ?? "",
+  username: process.env.USERNAME ?? "sandbox",
 });
 
 // Get the SMS service

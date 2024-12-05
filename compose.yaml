@@ -6,16 +6,16 @@ services:
     ports:
       - 8000:8000
     environment:
-      - dbURI=mongodb+srv://testUser:2TestUser@node-practice.4fa5l.mongodb.net/sms-dashboard?retryWrites=true&w=majority
-      - public_key=pk_live_51L84wFBJ7WGCnfVP9kQpnsl2NDlw0TLrJCnmMlEjJUH6gOApYnmQi03KIfweLYHVJJLV7LCVXdyE3aiy1FXfnL9p005K8cS0uY
-      - username=sandbox
-      - apiKey=atsk_bd0591aa00fe1f2dc64392f5c30eba49ac2b7d243437cc1429ff394028034fe369acc102
-      - PORT=8000
-      - JWT_SECRET=e1f52557ba4b192f302d9ea15e3786333fffe5cbfa
-      - EMAIL_USER=9e5wD@example.com
-      - EMAIL_PASS=Test@123
-      - CLIENT_URL=https://infotext.netlify.app/
-      - WEBHOOK_SECRET=secretcallbacksecret
+      - DB_URI=${DB_URI}
+      - PUBLIC_KEY=${PUBLIC_KEY}
+      - USERNAME=${USERNAME}
+      - API_KEY=${API_KEY}
+      - PORT=${PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - CLIENT_URL=${CLIENT_URL}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
     develop:
       watch:
         - action: sync
